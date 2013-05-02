@@ -1,0 +1,159 @@
+{% extends "cs564/base.html" %}
+
+{% block title %}Observation Path Detail{% endblock %}
+
+{% block content %}
+
+<ul class="breadcrumb">
+  <li><a href="{% url 'cs564:index' %}">Main</a> <span class="divider">/</span></li>
+  <li><a href="{% url 'cs564:op_list' %}">Observation Paths</a> <span class="divider">/</span></li>
+  <li class="active">Observation path {{ op.id }}</li>
+</ul>
+
+
+<div class="page-header">
+  <h1>Observation path {{ op.id }}</h1>
+</div>
+
+<div class="row">
+  <div class="span12">
+    <form class="form-inline" action="{% url 'cs564:op_update' op.id %}" method="POST">
+      {% csrf_token %}
+      {{ p_form.non_field_errors }}
+      <div class="row">
+        <div class="span3"><strong>Name</strong></div>
+        <div class="span2"><strong>Direction</strong></div>
+      </div>
+      <div class="row">
+        <div class="span3">
+          <input type="text" id="id_name" name="name" value="{{ op.name }}">
+        </div>
+        <div class="span2">
+          <div class="input-append">
+            <input type="text" id="id_direction" class="input-mini" name="direction"
+              value="{{ op.direction }}"><span class="add-on">deg</span>
+            </div>
+        </div>
+        <div class="span2">
+          <button type="submit" class="btn">Update</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="span2">{{ p_form.name.errors }}</div>
+        <div class="span2">{{ p_form.direction.errors }}</div>
+      </div>
+          
+            
+      <input type="hidden" name="created_at" id="id_created_at" value="{{ op.created_at }}" />
+    </form>
+  </div>
+</div>
+
+
+<div class="page-header">
+  <h2>Observation path coordinates</h2>
+</div>
+<div class="row">
+  <div class="span8">
+    {% if coord_list %}
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>latitude</th>
+          <th>longitude</th>
+          <th>elevation</th>
+          <th>height</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if coord_list %}
+        {% for coordinate in coord_list %}
+        <tr>
+          <td>{{ coordinate.latitude }}</td>
+          <td>{{ coordinate.longitude }}</td>
+          <td>{{ coordinate.elevation }}</td>
+          <td>{{ coordinate.height }}</td>
+          <td>
+            <form action="{% url 'cs564:op_coord_delete' op.id coordinate.id %}"
+              method="POST" style="margin:0px;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-link">delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        {% endif %}
+      </tbody>
+    </table>
+    {% else %}
+    <p>No coordinates found. Add some!</p>
+    {% endif %}
+  </div>
+</div>
+
+
+<div class="page-header">
+  <h2>Add coordinate</h2>
+</div>
+<div class="row">
+  <div class="span11">
+    <form action="{% url 'cs564:op_coord_add' op.id %}" class="form-inline" method="post">
+      {% csrf_token %}
+      {{ c_form.non_field_errors }}
+      {{ c_form.path.errors }}
+      {{ c_form.array.errors }}
+      <div class="row">
+        <div class="span2"><strong>Latitude</strong></div>
+        <div class="span2"><strong>Longitude</strong></div>
+        <div class="span2"><strong>Elevation</strong></div>
+        <div class="span2"><strong>Height</strong></div>
+      </div>
+      <div class="row">
+        <div class="span2">
+          <div class="input-append">
+          <input type="text" id="id_c-latitude" class="input-small" name="c-latitude"
+            value="{{ c_form.latitude.value|default_if_none:"" }}"/>
+            <span class="add-on">deg</span>
+          </div>
+        </div>
+        <div class="span2">
+          <div class="input-append">
+          <input type="text" id="id_c-longitude" class="input-small" name="c-longitude"
+            value="{{ c_form.longitude.value|default_if_none:"" }}"/>
+            <span class="add-on">deg</span>
+          </div>
+        </div>
+        <div class="span2">
+          <div class="input-append">
+          <input type="text" id="id_c-elevation" class="input-mini" name="c-elevation"
+            value="{{ c_form.elevation.value|default_if_none:"" }}"/>
+            <span class="add-on">m</span>
+          </div>
+        </div>
+        <div class="span2">
+          <div class="input-append">
+          <input type="text" id="id_c-height" class="input-mini" name="c-height"
+            value="{{ c_form.height.value|default_if_none:"" }}"/>
+            <span class="add-on">m</span>
+          </div>
+        </div>
+        <div class="span2">
+          <button type="submit" class="btn">Add</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="span2">{{ c_form.latitude.errors }}</div>
+        <div class="span2">{{ c_form.longitude.errors }}</div>
+        <div class="span2">{{ c_form.elevation.errors }}</div>
+        <div class="span2">{{ c_form.height.errors }}</div>
+      </div>
+      <input type="hidden" id="id_c-path" name="c-path" value="{{ op.id }}"/>
+      <input type="hidden" id="id_c-pv_array" name="c-pv_array" value=""/>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
+

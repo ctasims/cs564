@@ -1,0 +1,189 @@
+{% extends "cs564/base.html" %}
+
+{% block title %}Analysis Detail{% endblock %}
+
+{% block content %}
+
+<ul class="breadcrumb">
+  <li><a href="{% url 'cs564:index' %}">Main</a> <span class="divider">/</span></li>
+  <li><a href="{% url 'cs564:analysis_list' %}">Analyses</a> <span class="divider">/</span></li>
+  <li class="active">Analysis: {{ analysis.name }}</li>
+</ul>
+
+
+<div class="page-header">
+  <h1>Analysis: {{ analysis.name }}</h1>
+</div>
+
+
+<div class="row">
+  <div class="span12">
+    <form class="form-inline" action="{% url 'cs564:analysis_detail' analysis.id %}" method="POST">
+      {% csrf_token %}
+      {{ a_form.non_field_errors }}
+      <div class="row">
+        <div class="span2"><strong>Name</strong></div>
+        <div class="span2"><strong>Description</strong></div>
+      </div>
+      <div class="row">
+        <div class="span2">
+          <input type="text" id="id_name" class="input-small" name="name"
+            value="{{ analysis.name }}"/>
+        </div>
+        <div class="span2">
+          <input type="text" id="id_description" class="input-small" name="description"
+            value="{{ analysis.description }}"/>
+          </div>
+
+        <div class="span2">
+          <button type="submit" class="btn">Update</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="span2">{{ a_form.name.errors }}</div>
+        <div class="span2">{{ a_form.description.errors }}</div>
+      </div>
+            
+      <input type="hidden" name="created_at" id="id_created_at" value="{{ analysis.created_at }}" />
+    </form>
+  </div>
+</div>
+
+
+<div class="page-header">
+  <h3>PV Arrays</h3>
+</div>
+<div class="row">
+  <div class="span8">
+    {% if a_array_list %}
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Path id</th>
+          <th>Name</th>
+          <th>Orientation</th>
+          <th>Tilt</th>
+          <th>Height</th>
+          <th>Panel</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for a_array in a_array_list %}
+        <tr>
+          <td>
+            <a href="{% url 'cs564:pv_array_detail' a_array.id %}">{{ a_array.id }}</a>
+          </td>
+          <td>{{ a_array.name }}</td>
+          <td>{{ a_array.orientation }}</td>
+          <td>{{ a_array.tilt }}</td>
+          <td>{{ a_array.height }}</td>
+          <td>{{ a_array.panel.name }}</td>
+          <td>
+            <form action="{% url 'cs564:analysis_array_remove' analysis.id a_array.id %}"
+              method="POST" style="margin:0px;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-link">Remove from analysis</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </ul>
+    {% else %}
+    <p>No PV arrays found for this analysis.</p>
+    {% endif %}
+  </div>
+</div>
+
+<br />
+<br />
+<div class="row">
+  <div class="span12">
+    <form action="{% url 'cs564:analysis_component_add' analysis.id %}" class="form-inline" method="post">
+      {% csrf_token %}
+      {{ component_form.non_field_errors }}
+      <label for="array-id_pv_array">Add PV array to analysis:
+        <select class="span2" name="array-pv_array" id="id_array-pv_array">
+          {% for pv_array in pv_array_list %}
+          <option value="{{ pv_array.id }}">{{ pv_array.name }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <button type="submit" class="btn">Add</button>
+      <div class="row">
+        <div class="span2">{{ component_form.pv_array.errors }}</div>
+      </div>
+      <input type="hidden" name="array-analysis" id="id_array-analysis" value="{{ analysis.id }}" />
+    </form>
+  </div>
+</div>
+
+
+<div class="page-header">
+  <h3>Observation paths</h3>
+</div>
+<div class="row">
+  <div class="span8">
+    {% if a_op_list %}
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Path id</th>
+          <th>Name</th>
+          <th>Direction</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for op in a_op_list %}
+        <tr>
+          <td>
+            <a href="{% url 'cs564:op_detail' analysis.id %}">{{ op.id }}</a>
+          </td>
+          <td>{{ op.name }}</td>
+          <td>{{ op.direction }}</td>
+          <td>
+            <form action="{% url 'cs564:analysis_op_remove' analysis.id op.id %}"
+              method="POST" style="margin:0px;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-link">Remove from analysis</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </ul>
+    {% else %}
+    <p>No observations found for this analysis.</p>
+    {% endif %}
+  </div>
+</div>
+
+<br />
+<br />
+<div class="row">
+  <div class="span12">
+    <form action="{% url 'cs564:analysis_component_add' analysis.id %}" class="form-inline" method="post">
+      {% csrf_token %}
+      {{ component_form.non_field_errors }}
+      <label>Add observation to analysis:
+        <select class="span2" name="op-path" id="path-id_path">
+          {% for op in op_list %}
+          <option value="{{ op.id }}">{{ op.name }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <button type="submit" class="btn">Add</button>
+      <div class="row">
+        <div class="span2">{{ component_form.path.errors }}</div>
+      </div>
+      <input type="hidden" name="op-analysis" id="op-id_analysis" value="{{ analysis.id }}" />
+    </form>
+  </div>
+</div>
+
+{% endblock %}
+

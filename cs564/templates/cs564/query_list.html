@@ -1,0 +1,95 @@
+{% extends "cs564/base.html" %}
+
+{% block title %}Queries{% endblock %}
+
+{% block content %}
+
+<ul class="breadcrumb">
+  <li><a href="{% url 'cs564:index' %}">Main</a> <span class="divider">/</span></li>
+  <li class="active">Queries</li>
+</ul>
+
+
+<div class="page-header">
+  <h1>User activity</h1>
+</div>
+<div class="row">
+  <div class="span6">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th></th>
+          <th>created in last 24 hours</th>
+          <th>Total entries</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>Coordinates</th><td>{{ recents.coord }}</td><td>{{ counts.coord }}</td>
+        </tr>
+        <tr>
+          <th>PV arrays</th><td>{{ recents.array }}</td><td>{{ counts.array }}</td>
+        </tr>
+        <tr>
+          <th>Panels</th><td>{{ recents.panel }}</td><td>{{ counts.panel }}</td>
+        </tr>
+        <tr>
+          <th>Observations</th><td>{{ recents.op }}</td><td>{{ counts.op }}</td>
+        </tr>
+        <tr>
+          <th>Analyses</th><td>{{ recents.analysis }}</td><td>{{ counts.analysis }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<div class="page-header">
+  <h1>Geographics
+    <small>observations in the world</small>
+  </h1>
+</div>
+<div class="row">
+  <div class="span6">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Observations</th>
+          <th>PV Arrays</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>North America</th>
+          <td>{{ geog_ops.n_america }}</td>
+          <td>{{ geog_arrays.n_america }}</td>
+        </tr>
+        <tr>
+          <th>South America</th>
+          <td>{{ geog_ops.s_america }}</td>
+          <td>{{ geog_arrays.s_america }}</td>
+        </tr>
+        <tr>
+          <th>Europe</th>
+          <td>{{ geog_ops.europe }}</td>
+          <td>{{ geog_arrays.europe }}</td>
+        </tr>
+        <tr>
+          <th>Asia</th>
+          <td>{{ geog_ops.asia }}</td>
+          <td>{{ geog_arrays.asia }}</td>
+        </tr>
+        <tr>
+          <th>Africa</th>
+          <td>{{ geog_ops.africa }}</td>
+          <td>{{ geog_arrays.africa }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
+

@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+  <title>{% block title %}{% endblock %}</title>
+
+  <link rel="stylesheet" href="{{STATIC_URL}}bootstrap/css/bootstrap.css" />
+  <link rel="stylesheet" href="{{STATIC_URL}}css/bs-tweaks.css" />
+  {% block css %}{% endblock %}
+
+  <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+  <script src="http://code.jquery.com/ui/1.10.0/jquery-ui.min.js"></script>
+  <script src="{{STATIC_URL}}bootstrap/js/bootstrap.js"></script>
+  <script type="text/javascript"
+    src="{{ STATIC_URL }}cs564/js/libs/bootstrap/bootstrap-datepicker.js">
+  </script>
+  {% block js %}{% endblock %}
+</head>
+<body>
+
+  <div id="wrap">
+
+    <div class="navbar navbar-static-top navbar-inverse">
+      <div class="navbar-inner">
+        <a class="brand" href="#">Cianan Sims</a>
+        <ul class="nav">
+        </ul>
+      </div>
+    </div>
+
+    <div class="container">
+
+      {% block content %}
+      {% endblock %}
+
+    </div>
+    <div id="push"></div>
+  </div>
+
+  <div class="footer">
+    <div class="container">
+      <ul class="list-inline">
+        <li>&copy;2013 Cianan Sims</li>
+      </ul>
+    </div>
+  </div>
+
+</body>
+</html>

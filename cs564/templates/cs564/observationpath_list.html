@@ -1,0 +1,88 @@
+{% extends "cs564/base.html" %}
+
+{% block title %}Observation Paths{% endblock %}
+
+{% block content %}
+
+<ul class="breadcrumb">
+  <li><a href="{% url 'cs564:index' %}">Main</a> <span class="divider">/</span></li>
+  <li class="active">Observation Paths</li>
+</ul>
+
+<div class="page-header">
+  <h1>Observation paths</h1>
+</div>
+<div class="row">
+  <div class="span8" style="height:300px;overflow:auto;">
+    {% if op_list %}
+    <table class="table table-striped table-hover" >
+      <thead>
+        <tr>
+          <th>Path id</th>
+          <th>Name</th>
+          <th>Direction</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for op in op_list %}
+        <tr>
+          <td>
+            <a href="{% url 'cs564:op_detail' op.id %}">{{ op.id }}</a>
+          </td>
+          <td>{{ op.name }}</td>
+          <td>{{ op.direction }}</td>
+          <td>
+            <form action="{% url 'cs564:op_delete' op.id %}"
+              method="POST" style="margin:0px;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-link">delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p>No observations found. Add some!</p>
+    {% endif %}
+  </div>
+</div>
+
+
+<div class="page-header">
+  <h2>Add observation path</h2>
+</div>
+<div class="row">
+  <div class="span12">
+    <form action="{% url 'cs564:op_add' %}" class="form-inline" method="post">
+      {% csrf_token %}
+      {{ op_form.non_field_errors }}
+      <div class="row">
+        <div class="span2"><strong>Name</strong></div>
+        <div class="span2"><strong>Direction</strong></div>
+      </div>
+      <div class="row">
+        <div class="span2">
+          <input type="text" id="id_name" class="input-small" name="name"
+            value="{{ op_form.name.value|default_if_none:"" }}"/>
+        </div>
+        <div class="span2">
+          <input type="text" id="id_direction" class="input-small" name="direction"
+            value="{{ op_form.direction.value|default_if_none:"" }}"/>
+        </div>
+        <div class="span2">
+          <button type="submit" class="btn">Add</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="span2">{{ op_form.name.errors }}</div>
+        <div class="span2">{{ op_form.direction.errors }}</div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}
+

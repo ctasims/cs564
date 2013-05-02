@@ -1,0 +1,127 @@
+{% extends "cs564/base.html" %}
+
+{% block title %}PV Arrays{% endblock %}
+
+{% block content %}
+
+<ul class="breadcrumb">
+  <li><a href="{% url 'cs564:index' %}">Main</a> <span class="divider">/</span></li>
+  <li class="active">PV Arrays</li>
+</ul>
+
+<div class="page-header">
+  <h1>PV Arrays</h1>
+</div>
+<div class="row">
+  <div class="span8"  style="height:300px;overflow:auto;">
+    {% if pv_array_list %}
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Path id</th>
+          <th>Name</th>
+          <th>Orientation</th>
+          <th>Tilt</th>
+          <th>Height</th>
+          <th>Panel Type</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for pv_array in pv_array_list %}
+        <tr>
+          <td>
+            <a href="{% url 'cs564:pv_array_detail' pv_array.id %}">{{ pv_array.id }}</a>
+          </td>
+          <td>{{ pv_array.name }}</td>
+          <td>{{ pv_array.orientation }}</td>
+          <td>{{ pv_array.tilt }}</td>
+          <td>{{ pv_array.height }}</td>
+          <td>{{ pv_array.panel.manufacturer }} - {{ pv_array.panel.name }}</td>
+          <td>
+            <form action="{% url 'cs564:pv_array_delete' pv_array.id %}"
+              method="POST" style="margin:0px;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-link">delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </ul>
+    {% else %}
+    <p>No PV arrays found. Add some!</p>
+    {% endif %}
+  </div>
+</div>
+
+
+<div class="page-header">
+  <h2>Add PV array</h2>
+</div>
+<div class="row">
+  <div class="span12">
+    <form action="{% url 'cs564:pv_array_add' %}" class="form-inline" method="post">
+      {% csrf_token %}
+      {{ pv_array_form.non_field_errors }}
+      {{ pv_array_form.sun_path.errors }}
+      <div class="row">
+        <div class="span2"><strong>Name</strong></div>
+        <div class="span2"><strong>Orientation</strong></div>
+        <div class="span2"><strong>Tilt</strong></div>
+        <div class="span2"><strong>Height</strong></div>
+        <div class="span2"><strong>Panel type</strong></div>
+      </div>
+      <div class="row">
+        <div class="span2">
+          <input type="text" id="id_name" class="input-small" name="name"
+            value="{{ pv_array_form.name.value|default_if_none:"" }}"/>
+        </div>
+        <div class="span2">
+          <div class="input-append">
+            <input type="text" id="id_orientation" class="input-small" name="orientation"
+              value="{{ pv_array_form.orientation.value|default_if_none:"" }}"/>
+              <span class="add-on">deg</span>
+          </div>
+        </div>
+        <div class="span2">
+          <div class="input-append">
+            <input type="text" id="id_tilt" class="input-small" name="tilt"
+              value="{{ pv_array_form.tilt.value|default_if_none:"" }}"/>
+              <span class="add-on">deg</span>
+          </div>
+        </div>
+        <div class="span2">
+          <div class="input-append">
+            <input type="text" id="id_height" class="input-small" name="height"
+              value="{{ pv_array_form.height.value|default_if_none:"" }}"/>
+              <span class="add-on">ft</span>
+          </div>
+        </div>
+        <div class="span2">
+          <select class="span2" name="panel" id="id_panel">
+            {% for panel in panel_list %}
+            <option value="{{ panel.id }}">{{ panel.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <input type="hidden" id="id_sun_path" name="sun_path" value="" />
+        <div class="span2">
+          <button type="submit" class="btn">Add</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="span2">{{ pv_array_form.name.errors }}</div>
+        <div class="span2">{{ pv_array_form.orientation.errors }}</div>
+        <div class="span2">{{ pv_array_form.tilt.errors }}</div>
+        <div class="span2">{{ pv_array_form.height.errors }}</div>
+        <div class="span2">{{ pv_array_form.panel.errors }}</div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}
+

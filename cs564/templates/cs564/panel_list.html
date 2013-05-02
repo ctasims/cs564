@@ -1,0 +1,111 @@
+{% extends "cs564/base.html" %}
+
+{% block title %}Panels{% endblock %}
+
+{% block content %}
+
+<ul class="breadcrumb">
+  <li><a href="{% url 'cs564:index' %}">Main</a> <span class="divider">/</span></li>
+  <li class="active">Panels</li>
+</ul>
+
+<div class="page-header">
+  <h1>Panels</h1>
+</div>
+<div class="row">
+  <div class="span8" style="height:300px;overflow:auto;">
+    {% if panel_list %}
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Panel id</th>
+          <th>Name</th>
+          <th>Manufacturer</th>
+          <th>Description</th>
+          <th>Reflectivity</th>
+          <th>Index of Refraction</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for panel in panel_list %}
+        <tr>
+          <td>{{ panel.id }}</td>
+          <td>{{ panel.name }}</td>
+          <td>{{ panel.manufacturer }}</td>
+          <td>{{ panel.description }}</td>
+          <td>{{ panel.reflectivity }}</td>
+          <td>{{ panel.index_of_refrac }}</td>
+          <td>
+            <form action="{% url 'cs564:panel_delete' panel.id %}"
+              method="POST" style="margin:0px;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-link">delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </ul>
+    {% else %}
+    <p>No panels found. Add some!</p>
+    {% endif %}
+  </div>
+</div>
+
+
+<div class="page-header">
+  <h2>Add Panel</h2>
+</div>
+<div class="row">
+  <div class="span12">
+    <form action="{% url 'cs564:panel_add' %}" class="form-inline" method="post">
+      {% csrf_token %}
+      {{ panel_form.non_field_errors }}
+      <div class="row">
+        <div class="span2"><strong>Name</strong></div>
+        <div class="span2"><strong>Manufacturer</strong></div>
+        <div class="span2"><strong>Description</strong></div>
+        <div class="span2"><strong>Reflectivity</strong></div>
+        <div class="span2"><strong>Index of refraction</strong></div>
+      </div>
+      <div class="row">
+        <div class="span2">
+          <input type="text" id="id_name" class="input-small" name="name"
+            value="{{ panel_form.name.value|default_if_none:"" }}"/>
+        </div>
+        <div class="span2">
+          <input type="text" id="id_manufacturer" class="input-small" name="manufacturer"
+            value="{{ panel_form.manufacturer.value|default_if_none:"" }}"/>
+        </div>
+        <div class="span2">
+          <input type="text" id="id_description" class="input-small" name="description"
+            value="{{ panel_form.description.value|default_if_none:"" }}"/>
+        </div>
+        <div class="span2">
+          <input type="text" id="id_reflectivity" class="input-small" name="reflectivity"
+            value="{{ panel_form.reflectivity.value|default_if_none:"" }}"/>
+        </div>
+        <div class="span2">
+          <input type="text" id="id_index_of_refrac" class="input-small" name="index_of_refrac"
+            value="{{ panel_form.index_of_refrac.value|default_if_none:"" }}"/>
+        </div>
+        <div class="span2">
+          <button type="submit" class="btn">Add</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="span2">{{ panel_form.name.errors }}</div>
+        <div class="span2">{{ panel_form.manufacturer.errors }}</div>
+        <div class="span2">{{ panel_form.description.errors }}</div>
+        <div class="span2">{{ panel_form.reflectivity.errors }}</div>
+        <div class="span2">{{ panel_form.index_of_refrac.errors }}</div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}
+
